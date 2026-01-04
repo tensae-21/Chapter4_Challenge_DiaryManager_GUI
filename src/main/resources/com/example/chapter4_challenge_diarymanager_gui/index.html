@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diary Editor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        header {
+            padding: 24px 30px;
+            border-bottom: 1px solid #eee;
+            background-color: #fff;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .main-layout {
+            display: flex;
+            min-height: 700px;
+        }
+
+        .sidebar {
+            width: 25%;
+            background-color: #2c3e50;
+            color: white;
+            padding: 25px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-title {
+            padding: 0 25px 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #ecf0f1;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links li:hover {
+            background-color: #34495e;
+        }
+
+        .nav-links li.active {
+            background-color: #3498db;
+            border-left: 4px solid #1abc9c;
+        }
+
+        .nav-links li i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .content-area {
+            width: 75%;
+            padding: 0;
+        }
+
+        .entries-section {
+            padding: 25px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .entry-list {
+            list-style: none;
+        }
+
+        .entry-item {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .entry-item:hover {
+            background-color: #f0f7ff;
+            transform: translateX(5px);
+        }
+
+        .entry-date {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .entry-title {
+            font-weight: 500;
+            color: #3498db;
+            font-size: 16px;
+        }
+
+        .editor-section {
+            padding: 25px;
+        }
+
+        .editor-title {
+            font-size: 22px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Icon Toolbar Styles */
+        .icon-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #eaeaea;
+            margin-bottom: 25px;
+        }
+
+        .icon-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            background-color: white;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #555;
+            font-size: 16px;
+        }
+
+        .icon-button:hover {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .editor-container {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .editor-header {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-title-input {
+            border: none;
+            background: transparent;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            width: 70%;
+            outline: none;
+        }
+
+        .editor-date {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .editor-body {
+            padding: 25px;
+            min-height: 300px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .editor-body:focus {
+            outline: none;
+        }
+
+        .editor-actions {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #ddd;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 15px;
+        }
+
+        .btn-save {
+            background-color: #2ecc71;
+            color: white;
+            margin-right: 10px;
+        }
+
+        .btn-save:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-cancel {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #c0392b;
+        }
+
+        .dark-mode {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .container {
+            background-color: #2d2d2d;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-mode .sidebar {
+            background-color: #252525;
+        }
+
+        .dark-mode .icon-toolbar {
+            background-color: #3a3a3a;
+            border-color: #444;
+        }
+
+        .dark-mode .icon-button {
+            background-color: #444;
+            border-color: #555;
+            color: #ddd;
+        }
+
+        @media (max-width: 992px) {
+            .main-layout {
+                flex-direction: column;
+            }
+
+            .sidebar, .content-area {
+                width: 100%;
+            }
+
+            .icon-toolbar {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Diary</h1>
+        <p class="subtitle">Your personal journal and reflections</p>
+    </header>
+
+    <div class="main-layout">
+        <nav class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">Tense</div>
+                <ul class="nav-links">
+                    <li class="active"><i class="fas fa-pen"></i> Write</li>
+                    <li><i class="fas fa-calendar-day"></i> Today</li>
+                    <li><i class="fas fa-calendar-alt"></i> Calendar</li>
+                    <li><i class="fas fa-chart-bar"></i> Statistics</li>
+                    <li><i class="fas fa-cog"></i> Settings</li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Dark</div>
+                <ul class="nav-links">
+                    <li><i class="fas fa-book"></i> Entries</li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="content-area">
+            <section class="entries-section">
+                <input type="text" class="search-box" placeholder="Search entries...">
+
+                <ul class="entry-list">
+                    <li class="entry-item">
+                        <div class="entry-date">03 Jan 2026</div>
+                        <div class="entry-title">Morning Reflection</div>
+                    </li>
+                    <li class="entry-item">
+                        <div class="entry-date">03 Jan 2026</div>
+                        <div class="entry-title">nati</div>
+                    </li>
+                    <li class="entry-item">
+                        <div class="entry-date">02 Jan 2026</div>
+                        <div class="entry-title">Profile Update</div>
+                    </li>
+                    <li class="entry-item">
+                        <div class="entry-date">03 Jan 2026</div>
+                        <div class="entry-title">Profile Update</div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="editor-section">
+                <h2 class="editor-title">New Entry</h2>
+
+                <!-- Icon Toolbar with all specified icons -->
+                <div class="icon-toolbar">
+                    <div class="icon-button" title="File">
+                        <i class="fas fa-file-word"></i>
+                    </div>
+                    <div class="icon-button" title="Help">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="icon-button" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div class="icon-button" title="Bold">
+                        <i class="fas fa-bold"></i>
+                    </div>
+                    <div class="icon-button" title="Italic">
+                        <i class="fas fa-italic"></i>
+                    </div>
+                    <div class="icon-button" title="Underline">
+                        <i class="fas fa-underline"></i>
+                    </div>
+                    <div class="icon-button" title="Align Left">
+                        <i class="fas fa-align-left"></i>
+                    </div>
+                    <div class="icon-button" title="Align Center">
+                        <i class="fas fa-align-center"></i>
+                    </div>
+                    <div class="icon-button" title="Align Right">
+                        <i class="fas fa-align-right"></i>
+                    </div>
+                    <div class="icon-button" title="Align Justify">
+                        <i class="fas fa-align-justify"></i>
+                    </div>
+                    <div class="icon-button" title="Image">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div class="icon-button" title="Link">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <div class="icon-button" title="Table">
+                        <i class="fas fa-table"></i>
+                    </div>
+                    <div class="icon-button" title="Symbol">
+                        <i class="fas fa-symbols"></i>
+                    </div>
+                </div>
+
+                <div class="editor-container">
+                    <div class="editor-header">
+                        <input type="text" class="editor-title-input" placeholder="Entry Title" value="New Diary Entry">
+                        <div class="editor-date">04 Jan 2026</div>
+                    </div>
+
+                    <div class="editor-body" contenteditable="true">
+                        <p>Dear Diary,</p>
+                        <p>Today has been a productive day. I started with my morning reflection and then worked on updating my profile. The weather was nice, so I took a walk in the park during my lunch break.</p>
+                        <p>I'm planning to organize my tasks better for the coming week. Need to remember to:</p>
+                        <ul>
+                            <li>Finish the quarterly report</li>
+                            <li>Call mom on Sunday</li>
+                            <li>Schedule dentist appointment</li>
+                        </ul>
+                        <p>Feeling grateful for the small joys in life.</p>
+                    </div>
+
+                    <div class="editor-actions">
+                        <button class="btn btn-save">Save Entry</button>
+                        <button class="btn btn-cancel">Cancel</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Toggle dark mode functionality
+    const darkModeToggle = document.querySelector('.nav-links li:nth-child(5)');
+    const body = document.body;
+
+    darkModeToggle.addEventListener('click', function() {
+        body.classList.toggle('dark-mode');
+
+        if (body.classList.contains('dark-mode')) {
+            darkModeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+        } else {
+            darkModeToggle.innerHTML = '<i class="fas fa-cog"></i> Settings';
+        }
+    });
+
+    // Icon toolbar functionality
+    const iconButtons = document.querySelectorAll('.icon-button');
+    const editorBody = document.querySelector('.editor-body');
+
+    iconButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const iconClass = this.querySelector('i').className;
+
+            // Visual feedback for button click
+            this.style.backgroundColor = '#3498db';
+            this.style.color = 'white';
+            this.style.borderColor = '#3498db';
+
+            setTimeout(() => {
+                this.style.backgroundColor = '';
+                this.style.color = '';
+                this.style.borderColor = '';
+            }, 200);
+
+            // Execute appropriate action based on icon
+            if (iconClass.includes('fa-bold')) {
+                document.execCommand('bold', false, null);
+            } else if (iconClass.includes('fa-italic')) {
+                document.execCommand('italic', false, null);
+            } else if (iconClass.includes('fa-underline')) {
+                document.execCommand('underline', false, null);
+            } else if (iconClass.includes('fa-align-left')) {
+                document.execCommand('justifyLeft', false, null);
+            } else if (iconClass.includes('fa-align-center')) {
+                document.execCommand('justifyCenter', false, null);
+            } else if (iconClass.includes('fa-align-right')) {
+                document.execCommand('justifyRight', false, null);
+            } else if (iconClass.includes('fa-align-justify')) {
+                document.execCommand('justifyFull', false, null);
+            } else if (iconClass.includes('fa-image')) {
+                const imageUrl = prompt('Enter image URL:', 'https://picsum.photos/400/300');
+                if (imageUrl) {
+                    document.execCommand('insertImage', false, imageUrl);
+                }
+            } else if (iconClass.includes('fa-link')) {
+                const url = prompt('Enter URL:', 'https://example.com');
+                if (url) {
+                    document.execCommand('createLink', false, url);
+                }
+            } else if (iconClass.includes('fa-table')) {
+                const rows = prompt('Enter number of rows:', '3');
+                const cols = prompt('Enter number of columns:', '3');
+                if (rows && cols) {
+                    document.execCommand('insertHTML', false, createTableHTML(parseInt(rows), parseInt(cols)));
+                }
+            } else if (iconClass.includes('fa-question-circle')) {
+                alert('Diary Editor Help:\n\nUse the toolbar icons to format your text. Click on any icon to apply formatting to selected text or at the cursor position.');
+            } else if (iconClass.includes('fa-file-word')) {
+                alert('Export as Word document feature would be implemented here.');
+            } else if (iconClass.includes('fa-symbols')) {
+                const symbol = prompt('Enter a symbol or emoji to insert:', '★ ☆ ♥ ♦ ♣ ♠ ☺ ☼');
+                if (symbol) {
+                    document.execCommand('insertText', false, symbol);
+                }
+            }
+
+            // Return focus to editor
+            editorBody.focus();
+        });
+    });
+
+    // Function to create table HTML
+    function createTableHTML(rows, cols) {
+        let tableHTML = '<table style="border-collapse: collapse; width: 100%; margin: 10px 0;">';
+        for (let i = 0; i < rows; i++) {
+            tableHTML += '<tr>';
+            for (let j = 0; j < cols; j++) {
+                tableHTML += `<td style="border: 1px solid #ddd; padding: 8px;">Cell ${i+1}-${j+1}</td>`;
+            }
+            tableHTML += '</tr>';
+        }
+        tableHTML += '</table>';
+        return tableHTML;
+    }
+
+    // Entry item click functionality
+    const entryItems = document.querySelectorAll('.entry-item');
+    entryItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove active class from all entries
+            entryItems.forEach(entry => entry.style.backgroundColor = '');
+
+            // Add active class to clicked entry
+            this.style.backgroundColor = '#e3f2fd';
+
+            // Update editor with entry data (simulated)
+            const entryTitle = this.querySelector('.entry-title').textContent;
+            const entryDate = this.querySelector('.entry-date').textContent;
+
+            document.querySelector('.editor-title-input').value = entryTitle;
+            document.querySelector('.editor-date').textContent = entryDate;
+            document.querySelector('.editor-body').innerHTML = `<p>Loading entry content for "${entryTitle}"...</p>`;
+
+            // Simulate loading
+            setTimeout(() => {
+                document.querySelector('.editor-body').innerHTML = `
+                        <p>This is the content of my entry titled <strong>"${entryTitle}"</strong> from ${entryDate}.</p>
+                        <p>It was a meaningful day with many thoughts and reflections. I'm glad I took the time to write them down.</p>
+                        <p>Remembering the details helps me appreciate the journey.</p>
+                    `;
+            }, 500);
+        });
+    });
+
+    // Save and Cancel button functionality
+    document.querySelector('.btn-save').addEventListener('click', function() {
+        const title = document.querySelector('.editor-title-input').value;
+        alert(`Entry "${title}" saved successfully!`);
+    });
+
+    document.querySelector('.btn-cancel').addEventListener('click', function() {
+        if (confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
+            document.querySelector('.editor-title-input').value = 'New Diary Entry';
+            document.querySelector('.editor-date').textContent = '04 Jan 2026';
+            document.querySelector('.editor-body').innerHTML = `
+                    <p>Dear Diary,</p>
+                    <p>Start writing your thoughts here...</p>
+                `;
+        }
+    });
+</script>
+</body>
+</html>

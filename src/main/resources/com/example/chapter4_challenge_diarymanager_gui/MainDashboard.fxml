@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.HTMLEditor?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="mainContainer" xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.chapter4_challenge_diarymanager_gui.DashboardController" styleClass="main-panel">
+    <!-- Navigation Bar (Left) -->
+    <left>
+        <VBox spacing="12" styleClass="nav-bar">
+            <padding>
+                <Insets top="20" right="10" bottom="20" left="10"/>
+            </padding>
+
+            <Label text="📔 Diary" styleClass="nav-logo"/>
+            <Separator styleClass="nav-separator"/>
+
+            <!-- Re-ordered Nav Buttons -->
+            <Button text="👤 Tensae" onAction="#handleEditProfile" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="✍️ Write" onAction="#showWritingView" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="📅 Today" onAction="#handleToday" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="🗓️ Calendar" onAction="#showCalendarView" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="📊 Statistics" onAction="#showStatisticsView" maxWidth="Infinity" styleClass="nav-button"/>
+            <Button text="⚙️ Settings" onAction="#showSettingsView" maxWidth="Infinity" styleClass="nav-button"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <ToggleButton fx:id="themeToggle" text="🌙 Dark" onAction="#handleThemeToggle" maxWidth="Infinity" styleClass="nav-button"/>
+        </VBox>
+    </left>
+
+    <!-- Main Content Area -->
+    <center>
+        <StackPane fx:id="contentArea">
+
+            <BorderPane fx:id="writingView">
+                <left>
+                    <VBox spacing="10" styleClass="sub-sidebar">
+                        <padding>
+                            <Insets top="10" right="10" bottom="10" left="10"/>
+                        </padding>
+                        <Label text="Entries" styleClass="header-label-dark"/>
+                        <TextField fx:id="searchField" promptText="Search entries..." styleClass="search-input"/>
+                        <ListView fx:id="entryList" VBox.vgrow="ALWAYS"/>
+                        <Button text="Clear History" onAction="#handleClearHistory" maxWidth="Infinity" styleClass="delete-button-small"/>
+                    </VBox>
+                </left>
+                <center>
+                    <StackPane>
+                        <VBox fx:id="welcomePane" alignment="CENTER" spacing="15" style="-fx-background-color: white;">
+                            <Button text="+" onAction="#handlePlus" styleClass="welcome-plus-button"/>
+                        </VBox>
+
+                        <BorderPane fx:id="editorPane" styleClass="editor-area" visible="false">
+                            <top>
+                                <VBox spacing="0">
+                                    <TextField fx:id="titleField" promptText="Title..." styleClass="title-input"/>
+
+                                    <!-- Icon Toolbar -->
+                                    <ToolBar styleClass="icon-toolbar">
+                                        <!-- First Row of Icons -->
+                                        <Button fx:id="fileWordButton" styleClass="icon-button" onAction="#handleFileWord">
+                                            <graphic>
+                                                <Label styleClass="icon-label">📄</Label>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="questionButton" styleClass="icon-button" onAction="#handleQuestionCircle">
+                                            <graphic>
+                                                <Label styleClass="icon-label">❓</Label>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="cogButton" styleClass="icon-button" onAction="#handleCog">
+                                            <graphic>
+                                                <Label styleClass="icon-label">⚙️</Label>
+                                            </graphic>
+                                        </Button>
+                                        <Separator orientation="VERTICAL"/>
+
+                                        <!-- Formatting Buttons -->
+                                        <ToggleButton fx:id="boldButton" text="B" styleClass="format-button"/>
+                                        <ToggleButton fx:id="italicButton" text="I" styleClass="format-button"/>
+                                        <ToggleButton fx:id="underlineButton" text="U" styleClass="format-button"/>
+                                        <Separator orientation="VERTICAL"/>
+
+                                        <!-- Alignment Buttons -->
+                                        <ToggleButton fx:id="justifyLeftButton" text="L" styleClass="format-button"/>
+                                        <ToggleButton fx:id="justifyCenterButton" text="C" styleClass="format-button"/>
+                                        <ToggleButton fx:id="justifyRightButton" text="R" styleClass="format-button"/>
+                                        <ToggleButton fx:id="justifyJustifyButton" text="J" styleClass="format-button"/>
+                                        <Separator orientation="VERTICAL"/>
+
+                                        <!-- Additional Icons -->
+                                        <Button fx:id="imageButton" styleClass="icon-button" onAction="#handleImage">
+                                            <graphic>
+                                                <Label styleClass="icon-label">🖼️</Label>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="linkButton" styleClass="icon-button" onAction="#handleLink">
+                                            <graphic>
+                                                <Label styleClass="icon-label">🔗</Label>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="tableButton" styleClass="icon-button" onAction="#handleTable">
+                                            <graphic>
+                                                <Label styleClass="icon-label">📋</Label>
+                                            </graphic>
+                                        </Button>
+                                        <Button fx:id="symbolButton" styleClass="icon-button" onAction="#handleSymbol">
+                                            <graphic>
+                                                <Label styleClass="icon-label">🔣</Label>
+                                            </graphic>
+                                        </Button>
+
+                                        <Separator orientation="VERTICAL"/>
+                                        <ColorPicker fx:id="fontColorPicker"/>
+                                    </ToolBar>
+                                </VBox>
+                            </top>
+                            <center>
+                                <HTMLEditor fx:id="contentEditor"/>
+                            </center>
+                            <bottom>
+                                <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="editor-button-bar">
+                                    <Label fx:id="statusLabel" text="Ready"/>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <Button text="Delete" onAction="#handleDelete" styleClass="delete-button"/>
+                                    <Button text="Save" onAction="#handleSave" styleClass="save-button"/>
+                                </HBox>
+                            </bottom>
+                        </BorderPane>
+                    </StackPane>
+                </center>
+            </BorderPane>
+
+            <VBox fx:id="calendarView" visible="false" spacing="15" styleClass="content-view" alignment="TOP_CENTER">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <HBox alignment="CENTER" spacing="10">
+                    <Button text="&lt;" onAction="#handlePrevMonth"/>
+                    <Label fx:id="calendarMonthLabel" styleClass="view-header"/>
+                    <Button text="&gt;" onAction="#handleNextMonth"/>
+                </HBox>
+                <GridPane fx:id="calendarGrid" hgap="5" vgap="5" alignment="CENTER"/>
+            </VBox>
+
+            <VBox fx:id="settingsView" visible="false" spacing="15" styleClass="content-view">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <Label text="Settings" styleClass="view-header"/>
+                <CheckBox fx:id="autoSaveCheckbox" text="Enable Auto-Save" selected="true" onAction="#handleAutoSaveToggle"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Default Font Size:"/>
+                    <ComboBox fx:id="fontSizeComboBox"/>
+                </HBox>
+                <Separator/>
+                <Button text="About" styleClass="action-button"/>
+            </VBox>
+
+            <VBox fx:id="statisticsView" visible="false" spacing="15" styleClass="content-view" alignment="TOP_CENTER">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <Label text="Statistics" styleClass="view-header"/>
+                <GridPane hgap="10" vgap="10">
+                    <Label text="Total Entries:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label fx:id="totalEntriesLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <Label text="Words Per Entry:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label fx:id="wordsPerEntryLabel" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                </GridPane>
+            </VBox>
+
+        </StackPane>
+    </center>
+</BorderPane>
